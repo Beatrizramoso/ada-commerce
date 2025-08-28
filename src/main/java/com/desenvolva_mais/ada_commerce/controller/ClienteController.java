@@ -1,15 +1,14 @@
 package com.desenvolva_mais.ada_commerce.controller;
 
-
 import com.desenvolva_mais.ada_commerce.model.Cliente;
 import com.desenvolva_mais.ada_commerce.service.ClienteService;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@AllArgsConstructor
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/clientes")
 public class ClienteController {
@@ -19,33 +18,26 @@ public class ClienteController {
     // Criar um novo cliente
     @PostMapping
     public ResponseEntity<Cliente> criar(@RequestBody Cliente cliente) {
-        try {
-            return ResponseEntity.ok(service.cadastrarCliente(cliente));
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().build();
-        }
+        Cliente novoCliente = service.cadastrarCliente(cliente);
+        return ResponseEntity.status(201).body(novoCliente);
     }
 
-    // Atualiza um cliente
-    @PutMapping()
+    // Atualizar um cliente existente
+    @PutMapping
     public ResponseEntity<Cliente> atualizar(@RequestBody Cliente cliente) {
-        try {
-            return ResponseEntity.ok(service.atualizarCliente(cliente));
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().build();
-        }
+        Cliente clienteAtualizado = service.atualizarCliente(cliente);
+        return ResponseEntity.ok(clienteAtualizado);
     }
 
-    // Listar todos clientes
+    // Listar todos os clientes
     @GetMapping
     public ResponseEntity<List<Cliente>> listarTodos() {
-        List<Cliente> clientes = service.listarClientes();
-        return ResponseEntity.ok(clientes);
+        return ResponseEntity.ok(service.listarClientes());
     }
 
     // Buscar um cliente pelo documento
     @GetMapping("/{documento}")
-    public ResponseEntity<Cliente> buscarPorId(@PathVariable String documento) {
+    public ResponseEntity<Cliente> buscarPorDocumento(@PathVariable String documento) {
         Cliente cliente = service.buscarCliente(documento);
 
         if (cliente == null) {
@@ -56,4 +48,3 @@ public class ClienteController {
     }
 
 }
-
