@@ -3,11 +3,13 @@ package com.desenvolva_mais.ada_commerce.service;
 import com.desenvolva_mais.ada_commerce.model.Cliente;
 import com.desenvolva_mais.ada_commerce.repository.ClienteRepository;
 import lombok.RequiredArgsConstructor;
+import org.apache.logging.log4j.util.Strings;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.http.HttpStatus;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -32,6 +34,9 @@ public class ClienteService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Cliente já cadastrado");
         }
         cliente.setId(UUID.randomUUID());
+
+        validarCliente(cliente);
+
         return repository.save(cliente);
     }
 
@@ -42,9 +47,14 @@ public class ClienteService {
      * Se o cliente existir, atualiza os dados no banco.
      */
     public Cliente atualizarCliente(Cliente cliente) {
-        if (repository.findByDocumento(cliente.getDocumento()) == null) {
+        Optional<Cliente> clienteSalvo = repository.findById(cliente.getId());
+        if (clienteSalvo.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Cliente não existe cadastrado");
         }
+
+        cliente.setId(clienteSalvo.get().getId());
+        validarCliente(cliente);
+
         return repository.save(cliente);
     }
 
@@ -63,6 +73,20 @@ public class ClienteService {
      */
     public Cliente buscarCliente(String documento) {
         return repository.findByDocumento(documento);
+    }
+
+    private void validarCliente(Cliente cliente) {
+        if (Strings.isBlank(cliente.getDocumento())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Documento é obrigatório");
+        }
+
+        if (Strings.isBlank(cliente.getNome())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Nome é obrigatório");
+        }
+
+        if (Strings.isBlank(cliente.getEmail())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email é obrigatório");
+        }
     }
 
 }
