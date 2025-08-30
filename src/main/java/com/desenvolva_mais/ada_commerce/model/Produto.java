@@ -17,6 +17,8 @@ public class Produto {
     private Long id;
     public String nome;
     public String descrição
-            
+    public ValorBase;
+
+    
 
 }
