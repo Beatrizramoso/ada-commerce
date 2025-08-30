@@ -17,5 +17,10 @@ public class Produto {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    public String nome;
+    public String descrição
+    public ValorBase;
+
+    
 
 }
