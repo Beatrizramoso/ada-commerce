@@ -33,7 +33,6 @@ public class ClienteService {
         if (repository.findByDocumento(cliente.getDocumento()) != null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Cliente já cadastrado");
         }
-        cliente.setId(UUID.randomUUID());
 
         validarCliente(cliente);
 
