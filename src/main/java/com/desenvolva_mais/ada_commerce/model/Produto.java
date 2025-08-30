@@ -6,6 +6,8 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.*;
 
+import java.math.BigDecimal;
+
 @ToString
 @Getter
 @Setter
@@ -17,10 +19,11 @@ public class Produto {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    public String nome;
-    public String descrição
-    public ValorBase;
 
-    
+    public String nome;
+
+    public String descricao;
+
+    public BigDecimal valorBase;
 
 }
