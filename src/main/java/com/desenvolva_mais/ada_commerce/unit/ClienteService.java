@@ -1,4 +1,4 @@
-package com.desenvolva_mais.ada_commerce.service;
+package com.desenvolva_mais.ada_commerce.unit;
 
 import com.desenvolva_mais.ada_commerce.model.Cliente;
 import com.desenvolva_mais.ada_commerce.repository.ClienteRepository;

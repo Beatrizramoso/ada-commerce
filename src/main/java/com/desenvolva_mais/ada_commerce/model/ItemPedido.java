@@ -3,6 +3,8 @@ package com.desenvolva_mais.ada_commerce.model;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.math.BigDecimal;
+
 @ToString
 @Getter
 @Setter
@@ -25,5 +27,8 @@ public class ItemPedido {
     @JoinColumn(name = "produto_id")
     private Produto produto;
 
+    private BigDecimal valorVenda;
+
     private int quantidade;
+
 }
