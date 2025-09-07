@@ -20,14 +20,13 @@ public class ItemPedido {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-
+    // Removemos do ToString para não gerar StackOverflowError
+    @ToString.Exclude
+    @JsonIgnore
     @ManyToOne(optional = false)
     @JoinColumn(name = "pedido_id")
     private Pedido pedido;
 
-    // Removemos do ToString para não gerar StackOverflowError
-    @ToString.Exclude
-    @JsonIgnore
     @ManyToOne(optional = false)
     @JoinColumn(name = "produto_id")
     private Produto produto;
