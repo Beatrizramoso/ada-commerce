@@ -10,7 +10,6 @@ import org.springframework.http.HttpStatus;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 /**
  * Serviço responsável por gerenciar as operações relacionadas a clientes.
@@ -36,6 +35,8 @@ public class ClienteService {
 
         validarCliente(cliente);
 
+        cliente.setId(null);
+
         return repository.save(cliente);
     }
 
@@ -48,10 +49,9 @@ public class ClienteService {
     public Cliente atualizarCliente(Cliente cliente) {
         Optional<Cliente> clienteSalvo = repository.findById(cliente.getId());
         if (clienteSalvo.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Cliente não existe cadastrado");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Cliente não existe");
         }
 
-        cliente.setId(clienteSalvo.get().getId());
         validarCliente(cliente);
 
         return repository.save(cliente);

@@ -14,16 +14,18 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Produto {
 
     @Id
+    @EqualsAndHashCode.Include
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    public String nome;
+    private String nome;
 
-    public String descricao;
+    private String descricao;
 
-    public BigDecimal valorBase;
+    private BigDecimal valorBase;
 
 }
