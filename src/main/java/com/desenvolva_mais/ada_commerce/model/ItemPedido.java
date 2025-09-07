@@ -1,5 +1,6 @@
 package com.desenvolva_mais.ada_commerce.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -19,10 +20,14 @@ public class ItemPedido {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+
     @ManyToOne(optional = false)
     @JoinColumn(name = "pedido_id")
     private Pedido pedido;
 
+    // Removemos do ToString para não gerar StackOverflowError
+    @ToString.Exclude
+    @JsonIgnore
     @ManyToOne(optional = false)
     @JoinColumn(name = "produto_id")
     private Produto produto;

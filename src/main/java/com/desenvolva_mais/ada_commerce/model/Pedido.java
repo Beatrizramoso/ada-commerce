@@ -33,8 +33,6 @@ public class Pedido {
 
     private String observacaoEntrega;
 
-    // Removemos do ToString para não gerar StackOverflowError
-    @ToString.Exclude
     @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ItemPedido> itens = new ArrayList<>();
 
