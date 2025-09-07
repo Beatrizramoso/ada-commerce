@@ -1,8 +1,8 @@
-package com.desenvolva_mais.ada_commerce.integration;
+package com.desenvolva_mais.ada_commerce.controller;
 
 import com.desenvolva_mais.ada_commerce.model.Pedido;
-import com.desenvolva_mais.ada_commerce.unit.PedidoService;
-import com.desenvolva_mais.ada_commerce.unit.PagamentoService;
+import com.desenvolva_mais.ada_commerce.service.PedidoService;
+import com.desenvolva_mais.ada_commerce.service.PagamentoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

@@ -1,4 +1,4 @@
-package com.desenvolva_mais.ada_commerce.unit;
+package com.desenvolva_mais.ada_commerce.service;
 
 import com.desenvolva_mais.ada_commerce.model.Pedido;
 import com.desenvolva_mais.ada_commerce.model.enums.StatusPedido;

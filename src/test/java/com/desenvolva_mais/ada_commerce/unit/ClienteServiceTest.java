@@ -2,6 +2,7 @@ package com.desenvolva_mais.ada_commerce.unit;
 
 import com.desenvolva_mais.ada_commerce.model.Cliente;
 import com.desenvolva_mais.ada_commerce.repository.ClienteRepository;
+import com.desenvolva_mais.ada_commerce.service.ClienteService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

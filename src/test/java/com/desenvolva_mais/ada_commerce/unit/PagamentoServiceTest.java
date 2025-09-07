@@ -4,6 +4,8 @@ import com.desenvolva_mais.ada_commerce.model.Cliente;
 import com.desenvolva_mais.ada_commerce.model.Pedido;
 import com.desenvolva_mais.ada_commerce.model.enums.StatusPedido;
 import com.desenvolva_mais.ada_commerce.repository.PedidoRepository;
+import com.desenvolva_mais.ada_commerce.service.NotificacaoService;
+import com.desenvolva_mais.ada_commerce.service.PagamentoService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
