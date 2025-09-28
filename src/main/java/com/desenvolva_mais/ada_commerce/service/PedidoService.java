@@ -14,11 +14,7 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
-/**
- * Serviço responsável por gerenciar as operações relacionadas a Pedido.
- * <p>
- * Engloba criação, atualização, listagem, busca, finalização e entrega de pedidos.
- */
+
 @Service
 @RequiredArgsConstructor
 public class PedidoService {
@@ -28,10 +24,6 @@ public class PedidoService {
     private final ProdutoRepository produtoRepository;
     private final NotificacaoService notificacaoService;
 
-    /**
-     * Cria um novo pedido para o cliente informado.
-     * Status inicial: ABERTO
-     */
     public Pedido criarPedido(String documentoCliente) {
         Cliente cliente = Optional.ofNullable(clienteRepository.findByDocumento(documentoCliente))
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Cliente não encontrado"));
@@ -48,9 +40,6 @@ public class PedidoService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Pedido não encontrado"));
     }
 
-    /**
-     * Adiciona um item a um pedido.
-     */
     public Pedido adicionarItem(Long idPedido, Long idProduto, int quantidade, BigDecimal valorVenda) {
         Pedido pedido = buscarPedido(idPedido);
 
@@ -72,9 +61,6 @@ public class PedidoService {
         return pedidoRepository.save(pedido);
     }
 
-    /**
-     * Altera quantidade e/ou valor de um item já existente.
-     */
     public Pedido alterarItem(Long idPedido, Long idItem, int novaQuantidade, BigDecimal novoValorVenda) {
         Pedido pedido = buscarPedido(idPedido);
 
@@ -89,9 +75,6 @@ public class PedidoService {
         return pedidoRepository.save(pedido);
     }
 
-    /**
-     * Remove um item do pedido.
-     */
     public Pedido removerItem(Long idPedido, Long idItem) {
         Pedido pedido = buscarPedido(idPedido);
 
@@ -103,15 +86,13 @@ public class PedidoService {
         return pedidoRepository.save(pedido);
     }
 
-    /**
-     * Finaliza um pedido, validando se tem itens e valor > 0.
-     * Status muda para AGUARDANDO_PAGAMENTO.
-     */
     public Pedido finalizarPedido(Long idPedido) {
         Pedido pedido = buscarPedido(idPedido);
 
         if (pedido.getItens().isEmpty() ||
-                pedido.getItens().stream().map(ItemPedido::getValorVenda).reduce(BigDecimal.ZERO, BigDecimal::add)
+                pedido.getItens().stream()
+                        .map(ItemPedido::getValorVenda)
+                        .reduce(BigDecimal.ZERO, BigDecimal::add)
                         .compareTo(BigDecimal.ZERO) <= 0) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Pedido inválido: deve conter itens com valor > 0");
         }
@@ -119,14 +100,16 @@ public class PedidoService {
         pedido.setStatus(StatusPedido.AGUARDANDO_PAGAMENTO);
 
         Pedido atualizado = pedidoRepository.save(pedido);
-        notificacaoService.enviarEmail(pedido.getCliente(), "Seu pedido foi finalizado e aguarda pagamento.");
+
+        // Enviar e-mail em uma thread separada
+        new Thread(() -> notificacaoService.enviarEmail(
+                pedido.getCliente(),
+                "Seu pedido foi finalizado e aguarda pagamento.")
+        ).start();
+
         return atualizado;
     }
 
-    /**
-     * Entrega um pedido (somente se PAGO).
-     * Status muda para FINALIZADO.
-     */
     public Pedido entregarPedido(Long idPedido) {
         Pedido pedido = buscarPedido(idPedido);
 
@@ -137,7 +120,13 @@ public class PedidoService {
         pedido.setStatus(StatusPedido.FINALIZADO);
 
         Pedido atualizado = pedidoRepository.save(pedido);
-        notificacaoService.enviarEmail(pedido.getCliente(), "Seu pedido foi entregue!");
+
+        // Enviar e-mail em uma thread separada
+        new Thread(() -> notificacaoService.enviarEmail(
+                pedido.getCliente(),
+                "Seu pedido foi entregue!")
+        ).start();
+
         return atualizado;
     }
 

@@ -11,41 +11,30 @@ import org.springframework.http.HttpStatus;
 import java.util.List;
 import java.util.Optional;
 
-/**
- * Serviço responsável por gerenciar as operações relacionadas a clientes.
- * <p>
- * Engloba criação, atualização, listagem e busca de clientes.
- */
+
 @Service
 @RequiredArgsConstructor
 public class ClienteService {
 
     private final ClienteRepository repository;
 
-    /**
-     * Cadastra um novo cliente.
-     * <p>
-     * Se o cliente já existir (mesmo documento), lança ResponseStatusException 400 (Bad Request).
-     * Se o cliente for novo, gera um ID único e persiste no banco.
-     */
+
     public Cliente cadastrarCliente(Cliente cliente) {
         if (repository.findByDocumento(cliente.getDocumento()) != null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Cliente já cadastrado");
         }
 
         validarCliente(cliente);
-
         cliente.setId(null);
+        Cliente clienteSalvo = repository.save(cliente);
 
-        return repository.save(cliente);
+        // Inicia uma nova thread para simular o envio de e-mail de boas-vindas
+        new Thread(() -> enviarEmailBoasVindas(clienteSalvo)).start();
+
+        return clienteSalvo;
     }
 
-    /**
-     * Atualiza os dados de um cliente existente.
-     * <p>
-     * Se o cliente não existir, lança ResponseStatusException 400 (Bad Request).
-     * Se o cliente existir, atualiza os dados no banco.
-     */
+
     public Cliente atualizarCliente(Cliente cliente) {
         Optional<Cliente> clienteSalvo = repository.findById(cliente.getId());
         if (clienteSalvo.isEmpty()) {
@@ -57,24 +46,16 @@ public class ClienteService {
         return repository.save(cliente);
     }
 
-    /**
-     * Lista todos os clientes cadastrados.
-     */
-    public List<Cliente> listarClientes() {
+        public List<Cliente> listarClientes() {
         return repository.findAll();
     }
 
-    /**
-     * Busca um cliente pelo documento.
-     * <p>
-     * Se o cliente não existir, retorna null e o controller trata como HTTP 404.
-     * Se o cliente existir, retorna ele.
-     */
+    /
     public Cliente buscarCliente(String documento) {
         return repository.findByDocumento(documento);
     }
 
-    private void validarCliente(Cliente cliente) {
+        private void validarCliente(Cliente cliente) {
         if (Strings.isBlank(cliente.getDocumento())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Documento é obrigatório");
         }
@@ -88,4 +69,18 @@ public class ClienteService {
         }
     }
 
+
+    private void enviarEmailBoasVindas(Cliente cliente) {
+        try {
+            System.out.println("📤 Iniciando envio de e-mail para: " + cliente.getEmail());
+
+            // Simulando tempo de envio (ex: envio via servidor de e-mail)
+            Thread.sleep(3000); // 3 segundos
+
+            System.out.println("✅ E-mail de boas-vindas enviado para: " + cliente.getEmail());
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            System.err.println("❌ Falha ao enviar e-mail para: " + cliente.getEmail());
+        }
+    }
 }
