@@ -1,5 +1,8 @@
 package com.desenvolva_mais.ada_commerce.controller;
 
+import com.desenvolva_mais.ada_commerce.dto.ClienteCompletoDTO;
+import com.desenvolva_mais.ada_commerce.dto.CriarClienteDTO;
+import com.desenvolva_mais.ada_commerce.dto.converter.ClienteConverter;
 import com.desenvolva_mais.ada_commerce.model.Cliente;
 import com.desenvolva_mais.ada_commerce.service.ClienteService;
 import lombok.RequiredArgsConstructor;
@@ -27,9 +30,9 @@ public class ClienteController {
      * Retorna 201 Created com o cliente no corpo da resposta se criado com sucesso.
      */
     @PostMapping
-    public ResponseEntity<Cliente> criar(@RequestBody Cliente cliente) {
-        Cliente novoCliente = service.cadastrarCliente(cliente);
-        return ResponseEntity.status(201).body(novoCliente);
+    public ResponseEntity<ClienteCompletoDTO> criar(@RequestBody CriarClienteDTO cliente) {
+        Cliente novoCliente = service.cadastrarCliente(ClienteConverter.toModel(cliente));
+        return ResponseEntity.status(201).body(ClienteConverter.toDTO(novoCliente));
     }
 
     /**
@@ -39,9 +42,9 @@ public class ClienteController {
      * Retorna 200 OK com o cliente atualizado se a atualização for bem-sucedida.
      */
     @PutMapping
-    public ResponseEntity<Cliente> atualizar(@RequestBody Cliente cliente) {
-        Cliente clienteAtualizado = service.atualizarCliente(cliente);
-        return ResponseEntity.ok(clienteAtualizado);
+    public ResponseEntity<ClienteCompletoDTO> atualizar(@RequestBody ClienteCompletoDTO cliente) {
+        Cliente clienteAtualizado = service.atualizarCliente(ClienteConverter.toModel(cliente));
+        return ResponseEntity.ok(ClienteConverter.toDTO(clienteAtualizado));
     }
 
     /**
@@ -50,8 +53,13 @@ public class ClienteController {
      * Retorna 200 OK com todos os clientes encontrados.
      */
     @GetMapping
-    public ResponseEntity<List<Cliente>> listarTodos() {
-        return ResponseEntity.ok(service.listarClientes());
+    public ResponseEntity<List<ClienteCompletoDTO>> listarTodos() {
+        return ResponseEntity.ok(
+                service.listarClientes()
+                        .stream()
+                        .map(ClienteConverter::toDTO)
+                        .toList()
+        );
     }
 
     /**
@@ -61,9 +69,9 @@ public class ClienteController {
      * Retorna 404 Not Found se não encontrado.
      */
     @GetMapping("/{documento}")
-    public ResponseEntity<Cliente> buscarPorDocumento(@PathVariable String documento) {
+    public ResponseEntity<ClienteCompletoDTO> buscarPorDocumento(@PathVariable String documento) {
         Cliente cliente = service.buscarCliente(documento);
-        return cliente != null ? ResponseEntity.ok(cliente) : ResponseEntity.notFound().build();
+        return cliente != null ? ResponseEntity.ok(ClienteConverter.toDTO(cliente)) : ResponseEntity.notFound().build();
     }
 
 }
